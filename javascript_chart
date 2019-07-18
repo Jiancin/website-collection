@@ -1,0 +1,901 @@
+<!DOCTYPE HTML>
+<html>
+	<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link href="jquery-ui.css" rel="stylesheet">
+	<script type="text/javascript" src="jquery-1.9.1.min.js"></script>
+	<script type="text/javascript" src="jquery-ui.min.js"></script>
+	<link href='jquery-ui-timepicker-addon.css' rel='stylesheet'>
+	<script type="text/javascript" src="jquery-ui-timepicker-addon.js"></script>
+	<script type='text/javascript' src='jquery-ui-sliderAccess.js'></script>
+<style type="text/css">
+	.chart {
+	min-width: 320px;
+	max-width: 800px;
+	height: 220px;
+	margin: 0 auto;
+	}
+	</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1" />
+<script src="https://code.highcharts.com/highcharts.js"></script>
+	</head>
+	<body>
+	<div style="position:fixed;top:10px;left:0;width:50%;">
+	<div id="container"></div>
+	</div>
+	<div style="position:fixed;top:50px;right:0;width:50%;">
+	</div>
+	
+	
+	
+	
+<script type="text/javascript">
+/*-----------------------------------------------------------------------------*/
+		function parseDate(dateString){
+			var time = Date.parse(dateString);
+			if(!time){
+				time = Date.parse(dateString.replace("T"," "));
+				if(!time){
+					bound = dateString.indexOf('T');
+					var dateData = dateString.slice(0, bound).split('-');
+					var timeData = dateString.slice(bound+1, -1).split(':');
+
+					time = Date.UTC(dateData[0],dateData[1]-1,dateData[2],timeData[0],timeData[1],timeData[2]);
+				}
+			}
+			return time;
+		}
+		
+		
+		var allst;
+		var alled;
+		$.getJSON("self.json", function(result){
+		var length = result.length;
+		$.each(result, function(key, field){
+		if(key == 0){allst = parseDate(field.DT);}
+		if(key == length-1){alled = parseDate(field.DT);}
+			});
+		myFunction(allst,alled);
+		});
+		
+		
+		
+		function myFunction(selectstar,selectend) {
+		var c = $("#range_example_2_start").val();
+		var d= $("#range_example_2_end").val();
+		var a = Date.parse(c);
+		var b = Date.parse(d);
+		date1 = new Date(a);
+		date2 = new Date(b);
+		if(selectstar == undefined && selectend ==undefined)
+		{
+		var tb_star = date1.getTime();
+		var tb_end = date2.getTime();
+		var timeDiff = Math.abs(date2.getTime() - date1.getTime());
+		threechart(date1.getTime(),date2.getTime());
+		}
+		else
+		{
+		var tb_star = selectstar;
+		var tb_end = selectend;
+		var timeDiff = Math.abs(selectend - selectstar);
+		}
+		
+		var hours = Math.ceil(timeDiff / (1000 * 3600));
+		var Days = Math.floor(timeDiff / (1000 * 3600 * 24));
+		hr = Math.floor(hours- Days*24);
+		$.getJSON("self.json", function(result){
+		var conterA=0;
+		var conterH=0;
+		var conterS=0;
+		var tb_t = ["<4","4","5","6","7","8","9","10","11","12","13","14","15","16","17","18","19","20"]; 
+		var tb_p = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		var tb_a = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		var tb_h = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		var tb_s = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+		$.each(result, function(key, field){
+				if(tb_star<parseDate(field.DT) && parseDate(field.DT)< tb_end)
+				{
+				if(field.value_3 != 0)
+					{
+						conterA++;
+					}
+				if(field.value_5 != 0)
+					{
+						conterH++;
+					}
+				if(field.value_7 != 0)
+					{
+						conterS++;
+					}
+				switch (true) {
+					case (Math.floor(field.value_1)<4):
+						tb_p[0]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[0]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[0]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[0]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==4):
+						tb_p[1]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[1]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[1]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[1]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==5):
+						tb_p[2]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[2]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[2]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[2]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==6):
+						tb_p[3]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[3]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[3]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[3]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==7):
+						tb_p[4]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[4]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[4]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[4]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==8):
+						tb_p[5]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[5]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[5]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[5]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==9):
+						tb_p[6]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[6]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[6]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[6]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==10):
+						tb_p[7]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[7]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[7]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[7]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==11):
+						tb_p[8]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[8]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[8]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[8]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==12):
+						tb_p[9]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[9]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[9]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[9]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==13):
+						tb_p[10]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[10]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[10]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[10]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==14):
+						tb_p[11]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[11]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[11]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[11]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==15):
+						tb_p[12]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[12]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[12]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[12]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==16):
+						tb_p[13]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[13]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[13]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[13]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==17):
+						tb_p[14]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[14]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[14]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[14]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==18):
+						tb_p[15]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[15]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[15]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[15]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==19):
+						tb_p[16]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[16]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[16]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[16]++;
+							}
+						break;
+					case (Math.floor(field.value_1)==20):
+						tb_p[17]++;
+						if(field.value_3 != 0)
+							{
+								tb_a[17]++;
+							}
+						if(field.value_5 != 0)
+							{
+								tb_h[17]++;
+							}
+						if(field.value_7 != 0)
+							{
+								tb_s[17]++;
+							}
+						break;
+				}
+			}
+		});
+			var text = "<div style='width:370px;height:300px;overflow-x:hidden;overflow-y:auto;background-color:white;'><table border='5' style='width:350px;'>" + "<td>" + "value_1" + "</td>" + "<td>" +"Time" +"</td>"+"<td>"+"apneas"+"</td>"+"<td>"+"hypopneas"+"</td>"+"<td>"+"vibratory"+"</td>"+"<tr>";
+			for (index = 0; index < 18; index++) {
+			text += 
+			"<td>" + tb_t[index] + "</td>" +
+			"<td>" + (tb_p[index]/hours).toFixed(2) + "</td>" +
+			"<td>" + (tb_a[index]/hours).toFixed(2) + "</td>" + 
+			"<td>" + (tb_h[index]/hours).toFixed(2) + "</td>" + 
+			"<td>" + (tb_s[index]/hours).toFixed(2) + "</td>" +
+			"<tr>";
+			}
+			text += "</table></div>";		
+			document.getElementById("A").innerHTML = conterA;
+			document.getElementById("H").innerHTML = conterH;
+			document.getElementById("S").innerHTML = conterS;
+			document.getElementById("Ai").innerHTML = (conterA/hours).toFixed(2);
+			document.getElementById("Hi").innerHTML = (conterH/hours).toFixed(2);
+			document.getElementById("Si").innerHTML = (conterS/hours).toFixed(2);
+		});	
+		}
+threechart();
+function threechart(star,end) {
+	$("#container").html("");
+    $('#container').bind('mousemove touchmove', function (e) {
+        var chart,
+            point,
+            i;
+
+        for (i = 0; i < Highcharts.charts.length; i = i + 1) {
+            chart = Highcharts.charts[i];
+            e = chart.pointer.normalize(e); 
+            point = chart.series[0].searchPoint(e, true);
+
+            if (point) {
+                point.onMouseOver(); 
+                chart.tooltip.refresh(point); 
+                chart.xAxis[0].drawCrosshair(e, point); 
+            }
+        }
+    });
+
+    Highcharts.Pointer.prototype.reset = function () {
+        return undefined;
+    };
+	
+	function parseDate(dateString){
+		var time = Date.parse(dateString);
+		if(!time){
+			time = Date.parse(dateString.replace("T"," "));
+			if(!time){
+				bound = dateString.indexOf('T');
+				var dateData = dateString.slice(0, bound).split('-');
+				var timeData = dateString.slice(bound+1, -1).split(':');
+
+				time = Date.UTC(dateData[0],dateData[1]-1,dateData[2],timeData[0],timeData[1],timeData[2]);
+			}
+		}
+		return time;
+	}
+	
+    function syncExtremes(e) {
+        var thisChart = this.chart;
+
+        if (e.trigger !== 'syncExtremes') { 
+            Highcharts.each(Highcharts.charts, function (chart) {
+                if (chart !== thisChart) {
+                    if (chart.xAxis[0].setExtremes) { 
+                        chart.xAxis[0].setExtremes(e.min, e.max, undefined, false, { trigger: 'syncExtremes' });
+                    }
+                }
+            });
+        }
+    }
+
+
+	for (var i=0; i<4; i++){
+//----------------1---star------------------------
+		if(i==1){
+		var value_10;
+		var value_11;
+		var fruits = [];
+		var savedata2 = [];
+		var savedata3 = [];
+		$.getJSON("self.json", function(result){
+		$.each(result, function(key, field){
+		value_10 = field.value_10;
+		value_11 = field.value_11;
+
+		if(star == undefined &&end == undefined)
+		{
+
+		fruits.push([parseDate(field.DT), field.value_1]);
+		savedata3.push([parseDate(field.DT), parseInt(field.value_2)]);
+		if(field.value_3 != 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT), 30 ],
+					[parseDate(field.DT) + 1, 20 ]
+				);
+			}
+		else if(field.value_3 == 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT), null ],
+					[parseDate(field.DT) + 1, null ]
+				);
+			}
+		if(field.value_5 != 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT)+1, 20 ],
+					[parseDate(field.DT)+1, 10 ]
+				);
+			}
+		else if(field.value_5 == 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT)+1, null ],
+					[parseDate(field.DT)+1, null ]
+				);
+			}
+		if(field.value_7 != 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT)+1, 10 ],
+					[parseDate(field.DT)+1, 0 ]
+				);
+			}
+		else if(field.value_7 == 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT)+1, null ],
+					[parseDate(field.DT)+1, null ]
+				);
+			}
+		savedata2.push(
+		[parseDate(field.DT)+1, null ],
+		[parseDate(field.DT)+1, null ]
+		);
+		}
+		if(star<parseDate(field.DT) && parseDate(field.DT)<end){
+		fruits.push([parseDate(field.DT), field.value_1]);
+		savedata3.push([parseDate(field.DT), parseInt(field.value_2)]);
+		if(field.value_3 != 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT), 30 ],
+					[parseDate(field.DT) + 1, 20 ]
+				);
+			}
+		else if(field.value_3 == 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT), null ],
+					[parseDate(field.DT) + 1, null ]
+				);
+			}
+		if(field.value_5 != 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT)+1, 20 ],
+					[parseDate(field.DT)+1, 10 ]
+				);
+			}
+		else if(field.value_5 == 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT)+1, null ],
+					[parseDate(field.DT)+1, null ]
+				);
+			}
+		if(field.value_7 != 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT)+1, 10 ],
+					[parseDate(field.DT)+1, 0 ]
+				);
+			}
+		else if(field.value_7 == 0)
+			{
+				savedata2.push(
+					[parseDate(field.DT)+1, null ],
+					[parseDate(field.DT)+1, null ]
+				);
+			}
+		}
+
+	});
+			
+		
+			$('<div class="chart">')
+				.appendTo('#container')
+				.highcharts({
+							chart: {
+								type: 'spline',
+									marginLeft: 40, 
+									spacingTop: 20,
+									spacingBottom: 20,
+									zoomType: 'x',
+								events: {
+								selection: function(event) {
+										if (event.xAxis) {
+											myFunction(event.xAxis[0].min,event.xAxis[0].max);
+										} else {
+											myFunction(0,0);
+										}
+									}
+								}
+							},
+							title: {
+								text: null,
+								align: 'left',
+								margin: 0,
+								x: 30
+							},
+							credits: {
+								enabled: false
+							},
+							legend: {
+								enabled: false
+							},
+						xAxis: {
+							type: 'datetime',
+							dateTimeLabelFormats: {
+							day: '%Y-%m-%e %H:%M'
+							},
+						events: {
+						setExtremes: syncExtremes},
+							crosshair: {
+								width: 2,
+								color: '#ff8080'
+							},
+							labels: {
+								enabled: true
+							},
+							lineColor: 'black',
+							lineWidth: 1,
+						},
+					yAxis: {
+						min: 0,
+						max: 20,
+						title: {
+							text: 'value_1(cmH2O)'
+						},
+						tickInterval:2,
+						lineColor: 'black',
+						lineWidth: 1,
+						plotLines: [{
+						value: value_10,
+						color: 'purple',
+						dashStyle: 'shortdash',
+						width: 2,
+						label: {
+							text: value_10
+							}
+						}, {
+						value: value_11,
+						color: 'purple',
+						dashStyle: 'shortdash',
+						width: 2,
+						label: {
+							text: value_11
+							}
+						}]
+					},
+					tooltip: {
+						positioner: function () {
+							return {
+								x: this.chart.chartWidth - this.label.width, 
+								y: -1 
+							};
+						},
+						borderWidth: 0,
+						backgroundColor: 'none',
+						pointFormat: '{point.y}',
+						headerFormat: '',
+						shadow: false,
+							style: {
+								fontSize: '18px'
+							},
+					valueDecimals: '1'
+					},
+					series: [{
+						data: fruits,
+						color: Highcharts.getOptions().colors[4],
+						fillOpacity: 0.3,
+							tooltip: {
+								valueSuffix: ''
+							}
+					}],
+				});
+			});
+			}
+//---------------1----end--------------------
+
+//----------------2---star------------------------
+		if(i==2){
+
+
+		var yourLabels = {0: 'S',10: 'H',20: 'A'};
+		$.getJSON("self.json", function(result){
+				
+			$('<div class="chart">')
+				.appendTo('#container')
+				.highcharts({
+							chart: {
+								marginLeft: 40, 
+								spacingTop: 20,
+								spacingBottom: 20,
+								zoomType: 'x',
+								events: {
+								selection: function(event) {
+										if (event.xAxis) {
+											myFunction(event.xAxis[0].min,event.xAxis[0].max);
+										} else {
+											myFunction(0,0);
+										}
+									}
+								}
+							},
+							title: {
+								text: null,
+								align: 'left',
+								margin: 0,
+								x: 30
+							},
+							credits: {
+								enabled: false
+							},
+							legend: {
+								enabled: false
+							},
+						xAxis: {
+							type: 'datetime',
+							dateTimeLabelFormats: {
+							day: '%Y-%m-%e %H:%M'
+							},
+							crosshair: {
+								width: 2,
+								color: '#ff8080'
+							},
+							events: {
+								setExtremes: syncExtremes
+							},
+							labels: {
+								enabled: true
+							},
+							lineColor: 'black',
+							lineWidth: 1
+						},
+					yAxis: {
+						labels: {
+							formatter: function() {
+								return yourLabels[this.value];
+							}
+						},
+						title: {
+							text: null
+						},
+						max:21,
+						min:0,
+						lineColor: 'black',
+						lineWidth: 1
+					},
+
+					tooltip: {
+						positioner: function () {
+							return {
+								x: this.chart.chartWidth - this.label.width, 
+								y: -1 
+							};
+						},
+						borderWidth: 0,
+						backgroundColor: 'none',
+						pointFormat: '{point.y}',
+						headerFormat: '',
+						shadow: false,
+							style: {
+								fontSize: '18px'
+							},
+					valueDecimals: '1'
+					},
+
+        series: [{
+		
+            data: savedata2,
+			zones: [{
+                value: 10,
+                color: 'red'
+            }, {
+                value: 20,
+                color: 'blue'
+            }, {
+				value: 30,
+                color: '#33cc33'
+				}]
+			}]
+		});
+	});	
+}
+//---------------2----end--------------------
+
+//----------------3---star------------------------
+		if(i==3){
+		
+
+		$.getJSON("self.json", function(result){
+			$('<div class="chart">')
+				.appendTo('#container')
+				.highcharts({
+							chart: {
+								type: 'spline',
+									marginLeft: 40, 
+									spacingTop: 20,
+									spacingBottom: 20,
+									zoomType: 'x',
+								events: {
+								selection: function(event) {
+										if (event.xAxis) {
+											myFunction(event.xAxis[0].min,event.xAxis[0].max);
+										} else {
+											myFunction(0,0);
+										}
+									}
+								}
+							},
+							title: {
+								text: null,
+								align: 'left',
+								margin: 0,
+								x: 30
+							},
+							credits: {
+								enabled: false
+							},
+							legend: {
+								enabled: false
+							},
+						xAxis: {
+							type: 'datetime',
+							dateTimeLabelFormats: {
+							day: '%Y-%m-%e %H:%M'
+							},
+							crosshair: {
+								width: 2,
+								color: '#ff8080'
+							},
+							events: {
+								setExtremes: syncExtremes
+							},
+							labels: {
+								enabled: true
+							},
+							lineColor: 'black',
+							lineWidth: 1
+						},
+					yAxis: {
+						min: 0,
+						max: 100,
+						title: {
+							text: null
+						},
+						tickInterval:10,
+						lineColor: 'black',
+						lineWidth: 1,
+						plotLines: [{
+						value: 30,
+						color: 'red',
+						dashStyle: 'shortdash',
+						width: 2,
+						label: {
+							text: '30'
+							}
+						}, {
+						value: 60,
+						color: 'red',
+						dashStyle: 'shortdash',
+						width: 2,
+						label: {
+							text: '60'
+							}
+						}]
+						},
+					tooltip: {
+						positioner: function () {
+							return {
+								x: this.chart.chartWidth - this.label.width, 
+								y: -1 
+							};
+						},
+						borderWidth: 0,
+						backgroundColor: 'none',
+						pointFormat: '{point.y}',
+						headerFormat: '',
+						shadow: false,
+							style: {
+								fontSize: '18px'
+							},
+					valueDecimals: '1'
+					},
+					series: [{
+						data: savedata3,
+						type: 'line',
+						color: Highcharts.getOptions().colors[3],
+						fillOpacity: 0.3,
+							tooltip: {
+								valueSuffix: ''
+							}
+						}]
+					});
+				})	
+			}
+//---------------3----end--------------------
+	}
+};
+		</script>
+	</body>	
+</html>
