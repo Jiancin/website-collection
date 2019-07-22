@@ -49,7 +49,7 @@
 		
 		var allst;
 		var alled;
-		$.getJSON("self.json", function(result){
+		$.getJSON("chart_data.json", function(result){
 		var length = result.length;
 		$.each(result, function(key, field){
 		if(key == 0){allst = parseDate(field.DT);}
@@ -84,7 +84,7 @@
 		var hours = Math.ceil(timeDiff / (1000 * 3600));
 		var Days = Math.floor(timeDiff / (1000 * 3600 * 24));
 		hr = Math.floor(hours- Days*24);
-		$.getJSON("self.json", function(result){
+		$.getJSON("chart_data.json", function(result){
 		var conterA=0;
 		var conterH=0;
 		var conterS=0;
@@ -464,7 +464,7 @@ function threechart(star,end) {
 		var fruits = [];
 		var savedata2 = [];
 		var savedata3 = [];
-		$.getJSON("self.json", function(result){
+		$.getJSON("chart_data.json", function(result){
 		$.each(result, function(key, field){
 		value_10 = field.value_10;
 		value_11 = field.value_11;
@@ -681,7 +681,7 @@ function threechart(star,end) {
 
 
 		var yourLabels = {0: 'S',10: 'H',20: 'A'};
-		$.getJSON("self.json", function(result){
+		$.getJSON("chart_data.json", function(result){
 				
 			$('<div class="chart">')
 				.appendTo('#container')
@@ -787,7 +787,7 @@ function threechart(star,end) {
 		if(i==3){
 		
 
-		$.getJSON("self.json", function(result){
+		$.getJSON("chart_data.json", function(result){
 			$('<div class="chart">')
 				.appendTo('#container')
 				.highcharts({
