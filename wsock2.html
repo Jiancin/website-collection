@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>JS Bin</title>
+</head>
+<body>
+  <div>
+    video for RTC sender what he get
+    <video autoplay id="send"></video>
+  </div>
+  <div>
+    video for RTC ricever what he get
+    <video autoplay id="recive"></video>
+  </div>
+</body>
+</html>
+
+<style>
+  video {
+    border: 1px solid black;
+  }
+</style>
+
+<script>
+  navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia
+
+  const constraints = {
+    video: true,
+    audio: true
+  }
+
+  const ice_conf = {iceServers: [{ urls: ["stun:stun1.l.google.com:19302", "stun:stun2.l.google.com:19305" ] }]}
+
+  const reciverPlayer = document.querySelector('#recive')
+  const sendPlayer = document.querySelector('#send')
+
+  async function getWebCam(constraints){
+    let tracks = await navigator.mediaDevices.getUserMedia(constraints)
+    return tracks.getTracks()
+  }
+
+  async function sendSDP(PC, constraints){
+    const pc = PC
+    let tracks = await getWebCam(constraints)
+    await tracks.forEach(track => {
+      pc.addTrack(track, new MediaStream())
+    })
+    let offer = await pc.createOffer()
+    await pc.setLocalDescription(offer)
+
+    return JSON.stringify({ SDP: pc.localDescription })
+  }
+
+  async function reciveSDP(ice, constraints, jsonSDP, targetDOM){
+    const pc = new RTCPeerConnection(ice)
+    const SDP = new RTCSessionDescription(JSON.parse(jsonSDP).SDP)
+    await pc.setRemoteDescription(SDP)
+    let tracks = await getWebCam(constraints)
+    await tracks.forEach(track => {
+      pc.addTrack(track, new MediaStream())
+    })
+    let answer = await pc.createAnswer()
+    await pc.setLocalDescription(answer)
+
+    let reciveStream = await new MediaStream(pc.getReceivers().map(r => r.track))
+
+    targetDOM.srcObject = reciveStream
+
+    return JSON.stringify({ SDP: pc.localDescription })
+  }
+
+  async function getAnswer(PC, jsonSDP, targetDOM){
+    let SDP = new RTCSessionDescription(JSON.parse(jsonSDP).SDP)
+    let pc = PC
+    await pc.setRemoteDescription(SDP)
+    let remotestream = await new MediaStream(pc.getReceivers().map(x => x.track))
+    targetDOM.srcObject = remotestream
+
+  }
+
+  async function main(){
+    const pc = new RTCPeerConnection(ice_conf)
+    let sdp = await sendSDP(pc, constraints)
+    let answer = await reciveSDP(ice_conf, constraints, sdp, reciverPlayer)
+    await getAnswer(pc, answer, sendPlayer)
+  }
+
+  main()
+</script>
